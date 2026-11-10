@@ -1,0 +1,14 @@
+@if(paciente(); as pacienteActual){
+    <p>Nombre del paciente: {{ pacienteActual.nombre }}</p>
+    <p>Especie: {{ pacienteActual.especie }}</p>
+    <p>Edad: {{ pacienteActual.edad }}</p>
+    @if(pacienteActual.vacunado === true){
+        <p>Vacunado: Si </p>
+    }@else if(pacienteActual.vacunado === false){
+        <p>Vacunado: No </p>
+    }@else{
+        <p>Vacunado: Sin informacion</p>
+    }
+}@else{
+    <p>Selecciona un paciente</p>
+}

@@ -1,0 +1,8 @@
+@for(paciente of pacientes(); track paciente.id){
+    <div class="tarjeta-paciente">
+        <p>Nombre del paciente: {{ paciente.nombre }}</p>
+        <p>Especie del paciente: {{ paciente.especie }}</p>
+        <p>Edad del paciente: {{ paciente.edad }}</p>
+        <button type="button" (click)="seleccionarPaciente(paciente)">Seleccionar Paciente</button>
+    </div>
+}

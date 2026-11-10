@@ -1,0 +1,4 @@
+<label>Gestion de pacientes</label>
+
+<app-lista-pacientes [pacientes]="listaPacientes" (pacienteSeleccionado)="recibirPaciente($event)"/>
+<app-ficha-paciente [paciente]="pacienteRecibido"/>
