@@ -1,4 +1,13 @@
 <label>Gestion de pacientes</label>
 
-<app-lista-pacientes [pacientes]="listaPacientes" (pacienteSeleccionado)="recibirPaciente($event)"/>
-<app-ficha-paciente [paciente]="pacienteRecibido"/>
+@if(cargandoPacientes()){
+    <p>Cargando pacientes...</p>
+}@else if(errorPacientes()){
+    <p>Error al consultar al paciente: {{ errorPacientes() }}</p>
+}@else{
+    <app-lista-pacientes [pacientes]="listaPacientes()" (pacienteSeleccionado)="recibirPaciente($event)"/>
+}
+
+<button type="button" (click)="cargarPacientes()" [disabled]="cargandoPacientes()">Recargar Pacientes</button>
+<app-ficha-paciente [paciente]="pacienteRecibido()"/>
+
