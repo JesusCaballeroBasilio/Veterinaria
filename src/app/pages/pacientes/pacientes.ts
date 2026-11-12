@@ -24,6 +24,8 @@ export class Pacientes implements OnInit{
   cargandoPacientes = signal<boolean>(false);
   errorPacientes = signal<string | null>(null);
   pacienteRecibido = signal<Paciente | null>(null);
+  idBusqueda = signal<number>(0);
+  errorBusqueda = signal<string | null>(null);
 
 
   /*Metodos de ciclo de vida*/
@@ -63,5 +65,39 @@ export class Pacientes implements OnInit{
       }
     });
   }
+
+  actualizarIdBusqueda(id: string): void {
+    this.idBusqueda.set(Number(id))
+  }
+
+  idValido(): boolean { 
+    const id = this.idBusqueda();
+    return id > 0 && Number.isInteger(id);
+  }
+
+  buscarPaciente(): void {
+    if(!this.idValido()){
+      return;
+    }
+    this.errorBusqueda.set(null);
+    this.pacienteRecibido.set(null);
+    const id = this.idBusqueda();
+    this.pacienteService.obtenerPacientesPorId(id)
+    .subscribe({
+      next: (paciente) => {
+        console.log('Paciente encontrado: ', paciente)
+        this.pacienteRecibido.set(paciente)
+      }, 
+      error: (error) => {
+        console.error('No fue posible encontrar al paciente.', error);
+        this.errorBusqueda.set('No fue posible encontrar al paciente')
+      } 
+    }
+    )
+
+  }
+
+
+
 
 }
