@@ -1,5 +1,23 @@
 <label>Gestion de pacientes</label>
 
+<label for="idBusqueda">ID del paciente:</label>
+<input
+    #campoId
+    id="idBusqueda"
+    type="number"
+    min="1"
+    placeholder="Ingresa un ID"
+    (input)="actualizarIdBusqueda(campoId.value)"
+/>
+
+<button type="button" [disabled]="!idValido()" (click)="buscarPaciente()">Buscar paciente</button>
+@if(errorBusqueda()){
+    <p>Error al mostrar al paciente. {{errorBusqueda()}}
+    </p>
+}@else{ 
+    <app-ficha-paciente [paciente]="pacienteRecibido()"/>
+}
+
 @if(cargandoPacientes()){
     <p>Cargando pacientes...</p>
 }@else if(errorPacientes()){
@@ -9,5 +27,5 @@
 }
 
 <button type="button" (click)="cargarPacientes()" [disabled]="cargandoPacientes()">Recargar Pacientes</button>
-<app-ficha-paciente [paciente]="pacienteRecibido()"/>
+
 

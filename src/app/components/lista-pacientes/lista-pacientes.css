@@ -6,3 +6,9 @@
     gap: 16px;
     max-width: 200px;
 }
+
+.contenedor-pacientes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
