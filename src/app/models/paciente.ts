@@ -5,3 +5,5 @@ export interface Paciente {
     edad: number; 
     vacunado: boolean | null;
 }
+
+export type NuevoPaciente = Omit<Paciente, 'id'>

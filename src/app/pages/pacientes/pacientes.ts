@@ -3,7 +3,7 @@ import { ListaPacientes } from '../../components/lista-pacientes/lista-pacientes
 import { Paciente } from '../../models/paciente';
 import { FichaPaciente } from '../../components/ficha-paciente/ficha-paciente';
 import { PacienteService } from '../../services/paciente';
-import { finalize } from 'rxjs';
+import { finalize, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
@@ -26,6 +26,7 @@ export class Pacientes implements OnInit{
   pacienteRecibido = signal<Paciente | null>(null);
   idBusqueda = signal<number>(0);
   errorBusqueda = signal<string | null>(null);
+  cargandoBusqueda = signal<boolean>(false);
 
 
   /*Metodos de ciclo de vida*/
@@ -35,6 +36,7 @@ export class Pacientes implements OnInit{
 
   /*Metodos de la clase*/
   recibirPaciente(paciente: Paciente): void{
+    this.errorBusqueda.set(null);
     this.pacienteRecibido.set(paciente);
     console.log(paciente)
   }
@@ -56,8 +58,12 @@ export class Pacientes implements OnInit{
     )
     .subscribe({
       next: (pacientes) => {
-        console.log('Pacientes recibidos: ', pacientes);
-        this.listaPacientes.set(pacientes);
+        const pacientesLocales = this.pacienteService.obtenerPacientesRegistrados();
+        const pacientesCombinados: Paciente[] = [ 
+          ...pacientes,
+          ...pacientesLocales
+        ]
+        this.listaPacientes.set(pacientesCombinados)
       },
       error: (error) => { 
         console.error('Error al cargar los pacientes', error)
@@ -76,13 +82,21 @@ export class Pacientes implements OnInit{
   }
 
   buscarPaciente(): void {
-    if(!this.idValido()){
+    if(!this.idValido() || this.cargandoBusqueda()){
       return;
     }
     this.errorBusqueda.set(null);
     this.pacienteRecibido.set(null);
+    this.cargandoBusqueda.set(true);
     const id = this.idBusqueda();
     this.pacienteService.obtenerPacientesPorId(id)
+    .pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => {
+        console.log('Peticion HTTP finalizada')
+        this.cargandoBusqueda.set(false);
+      })
+    )
     .subscribe({
       next: (paciente) => {
         console.log('Paciente encontrado: ', paciente)
