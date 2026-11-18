@@ -5,10 +5,11 @@ import { FichaPaciente } from '../../components/ficha-paciente/ficha-paciente';
 import { PacienteService } from '../../services/paciente';
 import { finalize, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Alerts } from '../../components/alerts/alerts';
 
 
 @Component({
-  imports: [ListaPacientes, FichaPaciente],
+  imports: [ListaPacientes, FichaPaciente, Alerts],
   selector: 'app-pacientes',
   styleUrl: './pacientes.css',
   templateUrl: './pacientes.html',
