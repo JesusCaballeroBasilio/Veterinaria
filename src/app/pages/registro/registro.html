@@ -16,3 +16,9 @@
 
 </form>
 
+@if(mensajeRegistro(); as mensaje) {
+    <app-alerts 
+    [mensaje]="mensaje" 
+    (cerrar)="ocultarAlerta()"/>
+}
+
