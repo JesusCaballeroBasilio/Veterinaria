@@ -1,1 +1,18 @@
-<p>registro works!</p>
+<form [formGroup]="formularioPaciente">
+    <label for="nombre">Nombre del paciente:</label>
+    <input id="nombre" type="text" formControlName="nombre">
+    <label for="especie">Especie del paciente:</label>
+    <input id="especie" type="text" formControlName="especie">
+    <label for="edad">Edad del paciente:</label>
+    <input id="edad" type="number" formControlName="edad">
+    <label for="vacunado">El paciente esta vacunado?:</label>
+    <select id="vacunado" formControlName="vacunado">
+        <option [ngValue]="null">Sin informacion</option>
+        <option [ngValue]="true">Si</option>
+        <option [ngValue]="false">No</option>
+    </select>
+
+    <button type="submit" [disabled]="formularioPaciente.invalid" (click)="registrarPaciente()">Registrar Paciente</button>
+
+</form>
+
