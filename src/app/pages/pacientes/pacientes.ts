@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, DestroyRef} from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, computed} from '@angular/core';
 import { ListaPacientes } from '../../components/lista-pacientes/lista-pacientes';
 import { Paciente } from '../../models/paciente';
 import { FichaPaciente } from '../../components/ficha-paciente/ficha-paciente';
@@ -111,6 +111,18 @@ export class Pacientes implements OnInit{
     )
 
   }
+
+  cerrarErrorPacientes(): void {
+    this.errorPacientes.set(null);
+  }
+
+  totalPacientes = computed(() => this.listaPacientes().length);
+
+  totalVacunado = computed(() => 
+    this.listaPacientes()
+      .filter(paciente => paciente.vacunado === true)
+      .length
+    );
 
 
 
