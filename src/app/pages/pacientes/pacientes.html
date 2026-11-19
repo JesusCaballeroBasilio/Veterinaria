@@ -1,5 +1,8 @@
 <label>Gestion de pacientes</label>
 
+<p> Total de pacientes: {{ totalPacientes() }}</p>
+<p>Total de pacientes vacunados: {{ totalVacunado() }}</p>
+
 <label for="idBusqueda">ID del paciente:</label>
 <input
     #campoId
@@ -23,13 +26,10 @@
 }
 <app-ficha-paciente [paciente]="pacienteRecibido()"/>
 
-<!--@if()-->
-
-
 @if(cargandoPacientes()){
     <p>Cargando pacientes...</p>
-}@else if(errorPacientes()){
-    <p>Error al consultar al paciente: {{ errorPacientes() }}</p>
+}@else if(errorPacientes(); as mensaje){
+    <app-alerts [mensaje]="mensaje" (cerrar)="cerrarErrorPacientes()"/>
 }@else{
     <app-lista-pacientes [pacientes]="listaPacientes()" (pacienteSeleccionado)="recibirPaciente($event)"/>
 }
