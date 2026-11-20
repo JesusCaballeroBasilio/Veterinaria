@@ -3,6 +3,8 @@
 <p> Total de pacientes: {{ totalPacientes() }}</p>
 <p>Total de pacientes vacunados: {{ totalVacunado() }}</p>
 
+<button type="button" (click)="actualizarPacienteUntracked()">Actualizar untracked</button>
+
 <label for="idBusqueda">ID del paciente:</label>
 <input
     #campoId
