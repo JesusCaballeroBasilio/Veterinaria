@@ -1,4 +1,6 @@
-import { Component, inject, OnInit, signal, DestroyRef, computed} from '@angular/core';
+import { Component, inject, OnInit, signal, DestroyRef, computed
+  , effect, untracked
+} from '@angular/core';
 import { ListaPacientes } from '../../components/lista-pacientes/lista-pacientes';
 import { Paciente } from '../../models/paciente';
 import { FichaPaciente } from '../../components/ficha-paciente/ficha-paciente';
@@ -116,13 +118,42 @@ export class Pacientes implements OnInit{
     this.errorPacientes.set(null);
   }
 
-  totalPacientes = computed(() => this.listaPacientes().length);
+  /*Practicando computed() y effect() */
+  totalPacientes = computed(() => 
+    this.listaPacientes().length
+  );
 
   totalVacunado = computed(() => 
     this.listaPacientes()
       .filter(paciente => paciente.vacunado === true)
       .length
     );
+
+    /* Practicando untracked() 
+    Esta herramienta a diferencia de effect no convierte un signal en una dependencia*/
+    nombre = signal('Compi');
+    edad = signal(7);
+
+    actualizarPacienteUntracked(){
+      this.edad.set(5);
+      this.nombre.set('Rabanito');
+      this.nombre.set('Hasen');
+      this.edad.set(40);
+    }
+
+    constructor() {
+      effect(() => {
+        console.log('Total de pacientes actualizado: ', this.totalPacientes())
+        console.log('Nombre: ', this.nombre());
+        /*
+        console.log('Edad:', untracked(() => this.edad())) */
+        console.log('Edad:', this.edad())
+      });
+    }
+
+    
+
+    
 
 
 
