@@ -14,6 +14,12 @@
     placeholder="Ingresa un ID"
     (input)="actualizarIdBusqueda(campoId.value)"
 />
+<input 
+    #nombre
+    placeholder="Buscar paciente por nombre" 
+    (input)="buscarPacientePorNombre(nombre.value)"
+    type="text"
+/>
 
 <button type="button" [disabled]="!idValido() || cargandoBusqueda()" (click)="buscarPaciente()">
     @if(cargandoBusqueda()){
@@ -33,7 +39,7 @@
 }@else if(errorPacientes(); as mensaje){
     <app-alerts [mensaje]="mensaje" (cerrar)="cerrarErrorPacientes()"/>
 }@else{
-    <app-lista-pacientes [pacientes]="listaPacientes()" (pacienteSeleccionado)="recibirPaciente($event)"/>
+    <app-lista-pacientes [pacientes]="pacientesVisibles()" (pacienteSeleccionado)="recibirPaciente($event)"/>
 }
 
 <button type="button" (click)="cargarPacientes()" [disabled]="cargandoPacientes()">Recargar Pacientes</button>

@@ -5,7 +5,8 @@ import { ListaPacientes } from '../../components/lista-pacientes/lista-pacientes
 import { Paciente } from '../../models/paciente';
 import { FichaPaciente } from '../../components/ficha-paciente/ficha-paciente';
 import { PacienteService } from '../../services/paciente';
-import { finalize, take } from 'rxjs';
+import { finalize, Subject, map, debounceTime, distinctUntilChanged,
+   of, switchMap, delay, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Alerts } from '../../components/alerts/alerts';
 
@@ -30,11 +31,13 @@ export class Pacientes implements OnInit{
   idBusqueda = signal<number>(0);
   errorBusqueda = signal<string | null>(null);
   cargandoBusqueda = signal<boolean>(false);
+  pacientesVisibles = signal<Paciente[]>([]);
 
 
   /*Metodos de ciclo de vida*/
    ngOnInit(): void {
      this.cargarPacientes();
+     this.configurarBuscador();
    }
 
   /*Metodos de la clase*/
@@ -67,6 +70,7 @@ export class Pacientes implements OnInit{
           ...pacientesLocales
         ]
         this.listaPacientes.set(pacientesCombinados)
+        this.pacientesVisibles.set(pacientesCombinados)
       },
       error: (error) => { 
         console.error('Error al cargar los pacientes', error)
@@ -137,7 +141,6 @@ export class Pacientes implements OnInit{
     actualizarPacienteUntracked(){
       this.edad.set(5);
       this.nombre.set('Rabanito');
-      this.nombre.set('Hasen');
       this.edad.set(40);
     }
 
@@ -149,6 +152,51 @@ export class Pacientes implements OnInit{
         console.log('Edad:', untracked(() => this.edad())) */
         console.log('Edad:', this.edad())
       });
+    }
+
+    /* Practicando Subject */
+    busquedas$ = new Subject<string>();
+
+    
+    buscarPacientePorNombre(nombre : string): void {
+      this.busquedas$.next(nombre);
+      console.log('Nombre original:', `"${nombre}"`);
+    }
+
+    configurarBuscador(): void {
+      this.busquedas$
+      .pipe(
+        map( nombre => 
+          nombre.trim()
+        ),
+        debounceTime(500),
+        distinctUntilChanged(), 
+        switchMap( nombre => {
+          if(nombre === ''){
+            return of(this.listaPacientes())
+          }
+
+          return this.filtrarPacientes(nombre)
+        })
+      )
+      .subscribe({
+        next: (pacientes) => {
+          console.log('Pacientes encontrados:', pacientes)
+          this.pacientesVisibles.set(pacientes)
+        }
+      })
+    }
+
+    filtrarPacientes(nombre: string): Observable<Paciente[]> {
+      console.log('Iniciando busqueda: ', nombre)
+       const pacientesEncontrados = this.listaPacientes().filter( 
+        paciente => paciente.nombre.toLowerCase()
+        .includes(nombre.toLowerCase())
+      );
+      /* Devolver el observable con un retraso de 2000 ms */
+      return of(pacientesEncontrados).pipe(
+        delay(2000)
+      )
     }
 
     
